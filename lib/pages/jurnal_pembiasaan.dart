@@ -25,10 +25,16 @@ class _JurnalPembiasaanPageState extends State<JurnalPembiasaanPage> {
   };
 
   // Tambahan: list untuk menyimpan pekerjaan yang ditambahkan
-  final List<Map<String, String>> _pekerjaanList = [];
+  final List<Map<String, String>> _pekerjaanList = [
+    {'pekerjaan': 'Membuat aplikasi Flutter', 'tgl': '20 Nov', 'saksi': 'Budi'},
+    {'pekerjaan': 'Belajar Dart Programming', 'tgl': '21 Nov', 'saksi': 'Andi'},
+  ];
 
   // Tambahan: list untuk menyimpan materi yang ditambahkan
-  final List<Map<String, String>> _materiList = [];
+  final List<Map<String, String>> _materiList = [
+    {'materi': 'Flutter Widget', 'sts': 'A', 'tgl': '20 Nov'},
+    {'materi': 'State Management', 'sts': 'P', 'tgl': '22 Nov'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -379,164 +385,59 @@ class _JurnalPembiasaanPageState extends State<JurnalPembiasaanPage> {
     );
   }
 
-  // Tabel khusus untuk bagian pekerjaan — menampilkan header + baris yang diinput atau pesan kosong
   Widget _buildPekerjaanTable() {
-    final headers = const ['Pekerjaan', 'Tgl', 'Saksi'];
-
-    return Table(
-      border: TableBorder.all(color: Colors.grey[300]!),
-      columnWidths: const {
-        0: FlexColumnWidth(3),
-        1: FlexColumnWidth(1),
-        2: FlexColumnWidth(1),
-      },
+    return Column(
       children: [
-        // Header
-        TableRow(
-          decoration: BoxDecoration(color: Colors.grey[100]),
-          children: headers.map((header) {
-            return Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                header,
-                textAlign: header == 'Pekerjaan'
-                    ? TextAlign.left
-                    : TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _pekerjaanList.length,
+          itemBuilder: (context, index) {
+            final item = _pekerjaanList[index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: ExpansionTile(
+                shape: const Border(),
+                collapsedShape: const Border(),
+                leading: Icon(Icons.work_outline, color: Colors.blue[600], size: 24),
+                title: Text(
+                  item['pekerjaan'] ?? '',
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87),
+                ),
+                subtitle: Text(
+                  'Tanggal: ${item['tgl'] ?? ''}',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(Icons.person_outline, size: 16, color: Colors.grey[700]),
+                        const SizedBox(width: 8),
+                        Text('Saksi: ${item['saksi'] ?? ''}', style: TextStyle(fontSize: 13, color: Colors.grey[700])),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             );
-          }).toList(),
+          },
         ),
-
-        // Jika kosong: tampilkan pesan pada kolom pertama, sisanya tetap cell kosong (agar garis vertikal terlihat)
-        if (_pekerjaanList.isEmpty) ...[
-          TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  'Belum ada pekerjaan yang dicatat',
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-            ],
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: _showAddPekerjaanDialog,
+            icon: const Icon(Icons.add),
+            label: const Text('Tambah Pekerjaan'),
           ),
-          // Baris untuk tombol "+ Tambah Pekerjaan" di dalam tabel
-          TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                    onPressed: _showAddPekerjaanDialog,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(0, 0),
-                    ),
-                    child: const Text(
-                      '+ Tambah Pekerjaan',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-            ],
-          ),
-        ] else ...[
-          // Jika ada data: tampilkan setiap baris data
-          ..._pekerjaanList.map((item) {
-            return TableRow(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(
-                    item['pekerjaan'] ?? '',
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(item['tgl'] ?? '', textAlign: TextAlign.center),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(item['saksi'] ?? '', textAlign: TextAlign.center),
-                ),
-              ],
-            );
-          }).toList(),
-          // Baris terakhir: tombol tambah di bawah daftar
-          TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                    onPressed: _showAddPekerjaanDialog,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(0, 0),
-                    ),
-                    child: const Text(
-                      '+ Tambah Pekerjaan',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-            ],
-          ),
-        ],
+        ),
       ],
     );
   }
@@ -644,168 +545,61 @@ class _JurnalPembiasaanPageState extends State<JurnalPembiasaanPage> {
     );
   }
 
-  // Tabel khusus untuk bagian materi — menampilkan header + baris yang diinput atau pesan kosong
   Widget _buildMateriTable() {
-    final headers = const ['Materi', 'Sts', 'Tgl'];
-
-    return Table(
-      border: TableBorder.all(color: Colors.grey[300]!),
-      columnWidths: const {
-        0: FlexColumnWidth(3),
-        1: FlexColumnWidth(1),
-        2: FlexColumnWidth(1),
-      },
+    return Column(
       children: [
-        // Header
-        TableRow(
-          decoration: BoxDecoration(color: Colors.grey[100]),
-          children: headers.map((header) {
-            return Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                header,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-                textAlign: header == 'Materi'
-                    ? TextAlign.left
-                    : TextAlign.center,
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _materiList.length,
+          itemBuilder: (context, index) {
+            final item = _materiList[index];
+            final sts = item['sts'] ?? '';
+            Color iconColor = sts == 'A' ? Colors.green : (sts == 'P' ? Colors.orange : Colors.red);
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: ExpansionTile(
+                shape: const Border(),
+                collapsedShape: const Border(),
+                leading: Icon(Icons.book_outlined, color: iconColor, size: 24),
+                title: Text(
+                  item['materi'] ?? '',
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87),
+                ),
+                subtitle: Text(
+                  'Status: $sts',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Icon(Icons.calendar_today, size: 16, color: Colors.grey[700]),
+                        const SizedBox(width: 8),
+                        Text('Tanggal: ${item['tgl'] ?? ''}', style: TextStyle(fontSize: 13, color: Colors.grey[700])),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             );
-          }).toList(),
+          },
         ),
-
-        // Jika kosong: tampilkan pesan pada kolom pertama, sisanya tetap cell kosong (agar garis vertikal terlihat)
-        if (_materiList.isEmpty) ...[
-          TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 20,
-                ),
-                child: Text(
-                  'Belum ada materi yang diinput.',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontStyle: FontStyle.italic,
-                  ),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-            ],
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: _showAddMateriDialog,
+            icon: const Icon(Icons.add),
+            label: const Text('Tambah Materi'),
           ),
-          // Baris untuk tombol "+ Tambah Materi" di dalam tabel
-          TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                    onPressed: _showAddMateriDialog,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(0, 0),
-                    ),
-                    child: const Text(
-                      '+ Tambah Materi',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-            ],
-          ),
-        ] else ...[
-          // Jika ada data: tampilkan setiap baris data
-          ..._materiList.map((item) {
-            return TableRow(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(item['materi'] ?? '', textAlign: TextAlign.left),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(item['sts'] ?? '', textAlign: TextAlign.center),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Text(item['tgl'] ?? '', textAlign: TextAlign.center),
-                ),
-              ],
-            );
-          }).toList(),
-          // Baris terakhir: tombol tambah di bawah daftar
-          TableRow(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton(
-                    onPressed: _showAddMateriDialog,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(0, 0),
-                    ),
-                    child: const Text(
-                      '+ Tambah Materi',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 12,
-                ),
-                child: const SizedBox.shrink(),
-              ),
-            ],
-          ),
-        ],
+        ),
       ],
     );
   }
@@ -894,12 +688,113 @@ class _JurnalPembiasaanPageState extends State<JurnalPembiasaanPage> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: _buildPoinTable(),
-          ),
+          _buildPoinExpansion(),
         ],
       ),
+    );
+  }
+
+  Widget _buildPoinExpansion() {
+    final poinData = [
+      {'kategori': 'Minggu 1 (M1)', 'project': '5', 'pertanyaan': '3', 'total': '8'},
+      {'kategori': 'Minggu 2 (M2)', 'project': '5', 'pertanyaan': '4', 'total': '9'},
+      {'kategori': 'Minggu 3 (M3)', 'project': '0', 'pertanyaan': '0', 'total': '0'},
+      {'kategori': 'Minggu 4 (M4)', 'project': '0', 'pertanyaan': '0', 'total': '0'},
+    ];
+
+    return Column(
+      children: [
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: poinData.length,
+          itemBuilder: (context, index) {
+            final item = poinData[index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: ExpansionTile(
+                shape: const Border(),
+                collapsedShape: const Border(),
+                leading: Icon(Icons.star_outline, color: Colors.amber[700], size: 24),
+                title: Text(
+                  item['kategori'] ?? '',
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black87),
+                ),
+                subtitle: Text(
+                  'Total Poin: ${item['total']}',
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                ),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Project/Progress:', style: TextStyle(fontSize: 13, color: Colors.grey[700])),
+                            Text('${item['project']} poin', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Pertanyaan/Laporan:', style: TextStyle(fontSize: 13, color: Colors.grey[700])),
+                            Text('${item['pertanyaan']} poin', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                          ],
+                        ),
+                        const Divider(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Total Minggu Ini:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                            Text('${item['total']} poin', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.blue[50],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.blue[200]!),
+          ),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Jumlah Poin Ceklist Pembiasaan:', style: TextStyle(fontSize: 13, color: Colors.grey[700])),
+                  const Text('0', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text('Jumlah Keseluruhan Poin:', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  Text('17', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue)),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -983,86 +878,7 @@ class _JurnalPembiasaanPageState extends State<JurnalPembiasaanPage> {
     );
   }
 
-  Widget _buildPoinTable() {
-    return Table(
-      border: TableBorder.all(color: Colors.grey[300]!),
-      defaultColumnWidth: const IntrinsicColumnWidth(),
-      children: [
-        TableRow(
-          decoration: BoxDecoration(color: Colors.grey[100]),
-          children: [
-            _buildTableCell(
-              'Kategori Poin',
-              isHeader: true,
-              align: TextAlign.left,
-            ),
-            _buildTableCell('M1', isHeader: true),
-            _buildTableCell('M2', isHeader: true),
-            _buildTableCell('M3', isHeader: true),
-            _buildTableCell('M4', isHeader: true),
-          ],
-        ),
-        _buildPoinRow(
-          '(5) mengerjakan project/adanya\nupdate progress belajar',
-          ['0', '0', '0', '0'],
-        ),
-        _buildPoinRow(
-          '(1 - 5) poin dari pertanyaan atau\nlaporan pengetahuan materi',
-          ['0', '0', '0', '0'],
-        ),
-        _buildPoinRow('Jumlah poin minggu ini', [
-          '0',
-          '0',
-          '0',
-          '0',
-        ], isBold: true),
-        _buildPoinRow('Jumlah poin ceklist pembiasaan', [
-          '0',
-          '',
-          '',
-          '',
-        ], isBold: true),
-        _buildPoinRow('Jumlah keseluruhan poin', [
-          '0',
-          '',
-          '',
-          '',
-        ], isBold: true),
-      ],
-    );
-  }
 
-  TableRow _buildPoinRow(
-    String category,
-    List<String> values, {
-    bool isBold = false,
-  }) {
-    return TableRow(
-      children: [
-        _buildTableCell(category, align: TextAlign.left, isBold: isBold),
-        ...values.map((value) => _buildTableCell(value, isBold: isBold)),
-      ],
-    );
-  }
-
-  Widget _buildTableCell(
-    String text, {
-    bool isHeader = false,
-    bool isBold = false,
-    TextAlign align = TextAlign.center,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontWeight: isHeader || isBold ? FontWeight.bold : FontWeight.normal,
-          fontSize: 13,
-        ),
-        textAlign: align,
-      ),
-    );
-  }
 
   Widget _buildCard({required Widget child}) {
     return Container(

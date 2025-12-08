@@ -6,8 +6,30 @@ import 'jurnal_pembiasaan.dart';
 import 'pengaturan_akun.dart';
 import 'profile_page.dart';
 
-class CatatanSikapPage extends StatelessWidget {
+class CatatanSikapPage extends StatefulWidget {
   const CatatanSikapPage({super.key});
+
+  @override
+  State<CatatanSikapPage> createState() => _CatatanSikapPageState();
+}
+
+class _CatatanSikapPageState extends State<CatatanSikapPage> {
+  final List<BehaviorNote> notes = [
+    BehaviorNote(
+      category: 'Terlambat',
+      description: 'Datang terlambat ke sekolah tanpa keterangan',
+      status: 'Dalam Perbaikan',
+      reportedDate: '20 Nov 2025',
+      lastUpdate: '22 Nov 2025',
+    ),
+    BehaviorNote(
+      category: 'Tidak Mengerjakan Tugas',
+      description: 'Tidak mengumpulkan tugas matematika',
+      status: 'Sudah Berubah',
+      reportedDate: '15 Nov 2025',
+      lastUpdate: '24 Nov 2025',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -160,100 +182,108 @@ class CatatanSikapPage extends StatelessWidget {
           const SizedBox(height: 32),
           _buildStatCard(
             'Total Catatan',
-            '0',
+            '${notes.length}',
             Icons.description_outlined,
             Colors.blue,
           ),
           const SizedBox(height: 16),
           _buildStatCard(
             'Dalam Perbaikan',
-            '0',
+            '${notes.where((n) => n.status == 'Dalam Perbaikan').length}',
             Icons.build_outlined,
             Colors.orange,
           ),
           const SizedBox(height: 16),
           _buildStatCard(
             'Sudah Berubah',
-            '0',
+            '${notes.where((n) => n.status == 'Sudah Berubah').length}',
             Icons.check_circle_outline,
             Colors.green,
           ),
           const SizedBox(height: 32),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // header tabel (scrollable horizontally jika perlu)
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: notes.length,
+            itemBuilder: (context, index) {
+              final note = notes[index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
-                    child: Row(
-                      children: [
-                        _tableHeader('No', width: 48),
-                        _tableHeader('Kategori', width: 110),
-                        _tableHeader('Catatan', width: 110),
-                        _tableHeader('Status', width: 110),
-                        _tableHeader('Dilaporkan', width: 120),
-                        _tableHeader('Update Terakhir', width: 130),
-                        _tableHeader('Aksi', width: 80),
-                      ],
+                  ],
+                ),
+                child: ExpansionTile(
+                  shape: const Border(),
+                  collapsedShape: const Border(),
+                  leading: Icon(
+                    Icons.report_problem,
+                    color: note.status == 'Dalam Perbaikan' ? Colors.orange[600] : Colors.green[600],
+                    size: 24,
+                  ),
+                  title: Text(
+                    note.category,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
                     ),
                   ),
-                ),
-                // body tabel - tampilkan pesan kosong saat belum ada data
-                // batasi lebar pesan agar tidak ikut bergeser saat header di-scroll
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 16,
+                  subtitle: Text(
+                    'Status: ${note.status}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
                   ),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 32,
-                    child: Center(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
                       child: Column(
-                        children: const [
-                          Icon(
-                            Icons.check_circle_outline,
-                            size: 64,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(height: 12),
-                          Text(
-                            'Tidak ada catatan',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black87,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _detailRow('Catatan', note.description),
+                          const SizedBox(height: 8),
+                          _detailRow('Dilaporkan', note.reportedDate),
+                          const SizedBox(height: 8),
+                          _detailRow('Update Terakhir', note.lastUpdate),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: const Text(
+                                'Lihat Detail',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 6),
-                          Text(
-                            'Belum ada catatan sikap yang dilaporkan',
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
                           ),
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ],
       ),
@@ -314,20 +344,47 @@ class CatatanSikapPage extends StatelessWidget {
     );
   }
 
-  Widget _tableHeader(String title, {required double width}) {
-    return Container(
-      width: width,
-      padding: const EdgeInsets.only(right: 10),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        title,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: Colors.grey,
+  Widget _detailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey,
+            ),
+          ),
         ),
-      ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
     );
   }
+}
+
+class BehaviorNote {
+  final String category;
+  final String description;
+  final String status;
+  final String reportedDate;
+  final String lastUpdate;
+
+  BehaviorNote({
+    required this.category,
+    required this.description,
+    required this.status,
+    required this.reportedDate,
+    required this.lastUpdate,
+  });
 }

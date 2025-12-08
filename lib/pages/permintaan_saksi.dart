@@ -103,162 +103,78 @@ class _PermintaanSaksiPageState extends State<PermintaanSaksiPage> {
               ),
             ),
             const SizedBox(height: 24),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: requests.length,
+              itemBuilder: (context, index) {
+                final request = requests[index];
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey[200]!),
+                    ],
+                  ),
+                  child: ExpansionTile(
+                    shape: const Border(),
+                    collapsedShape: const Border(),
+                    leading: CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.grey[400],
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 20,
                       ),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            'PENGIRIM',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[600],
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            'TANGGAL',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[600],
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            'KONFIRMASI',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey[600],
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ],
+                    title: Text(
+                      request.name,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
                     ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: requests.length,
-                    itemBuilder: (context, index) {
-                      final request = requests[index];
-                      return Container(
+                    subtitle: Text(
+                      request.status,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    children: [
+                      Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              flex: 3,
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 18,
-                                    backgroundColor: Colors.grey[400],
-                                    child: const Icon(
-                                      Icons.person,
-                                      color: Colors.white,
-                                      size: 18,
-                                    ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_today,
+                                  size: 16,
+                                  color: Colors.blue[600],
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Tanggal: 24 Nov 2025',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[700],
                                   ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          request.name,
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          request.status,
-                                          style: TextStyle(
-                                            fontSize: 11,
-                                            color: Colors.grey[600],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue[50],
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.calendar_today,
-                                      size: 12,
-                                      color: Colors.blue[600],
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '24 Nov 2025',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.blue[600],
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              flex: 2,
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: request.isApproved
                                     ? null
@@ -271,24 +187,22 @@ class _PermintaanSaksiPageState extends State<PermintaanSaksiPage> {
                                   backgroundColor: Colors.green,
                                   foregroundColor: Colors.white,
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
+                                    vertical: 12,
                                   ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(4),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                   elevation: 0,
-                                  minimumSize: const Size(0, 28),
                                 ),
                                 child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: const [
-                                    Icon(Icons.check_circle, size: 14),
-                                    SizedBox(width: 4),
+                                    Icon(Icons.check_circle, size: 18),
+                                    SizedBox(width: 8),
                                     Text(
-                                      'Setujui',
+                                      'Setujui Permintaan',
                                       style: TextStyle(
-                                        fontSize: 11,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -298,11 +212,11 @@ class _PermintaanSaksiPageState extends State<PermintaanSaksiPage> {
                             ),
                           ],
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ],
         ),

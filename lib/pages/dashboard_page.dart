@@ -8,6 +8,7 @@ import 'explore_page.dart';
 import 'permintaan_saksi.dart';
 import 'profile_page.dart';
 import 'panduan_penggunaan.dart';
+import 'progress_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -127,6 +128,11 @@ class DashboardPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(builder: (_) => const PermintaanSaksiPage()),
               );
+            } else if (selected == 'progress') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProgressPage ()),
+              );
             } else if (selected == 'jelajahi') {
               Navigator.push(
                 context,
@@ -152,7 +158,7 @@ class DashboardPage extends StatelessWidget {
                 const SnackBar(
                   content: Text('Navigating to Pengaturan Akun...'),
                 ),
-              ) ;
+              );
               // ignore: avoid_print
               print('Menu selected: pengaturan');
               Navigator.push(
