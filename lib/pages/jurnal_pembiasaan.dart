@@ -70,8 +70,6 @@ class _JurnalPembiasaanPageState extends State<JurnalPembiasaanPage> {
       ),
     );
   }
-
-  // ========================= HEADER =========================
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.all(16),
